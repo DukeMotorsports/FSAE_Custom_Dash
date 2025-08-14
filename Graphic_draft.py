@@ -29,21 +29,6 @@ with dpg.theme() as warning_theme:
 def set_gear(value):
     dpg.set_value("Gear Position", value)
 
-# Function to update RPM bar(color rpm bar)
-# def update_rpm():
-#     rpm_value = random.randint(0, MAX_RPM) / MAX_RPM
-#     dpg.set_value("RPM GAUGE", rpm_value)
-
-#     # Color logic
-#     if rpm_value < 0.6:
-#         color = (0, 255, 0, 255)
-#     elif rpm_value < 0.85:
-#         color = (255, 255, 0, 255)
-#     else:
-#         color = (255, 0, 0, 255)
-    # dpg.configure_item("RPM GAUGE", overlay=f"{int(rpm_value * MAX_RPM)} RPM")
-    # dpg.bind_item_theme("RPM GAUGE", create_bar_theme(color))
-
 flash_state = False
 def update_rpm():
     global flash_state
