@@ -1,87 +1,96 @@
-import dearpygui.dearpygui as dpg
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.progressbar import ProgressBar
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.clock import Clock
+from kivy.core.window import Window
+from kivy.metrics import dp
 import random
 
-# Display resolution (change if your 5" screen is different)
+# Display resolution (set for Raspberry Pi 5" display)
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 480
 
 MAX_RPM = 7000
-gear = "N"
+gears = ["N", "1", "2", "3", "4", "5", "6"]
+current_gear_index = 0
 
-dpg.create_context()
+# Set window size
+Window.size = (DISPLAY_WIDTH, DISPLAY_HEIGHT)
 
-# Create viewport (app window)
-dpg.create_viewport(title="Race Dash", width=DISPLAY_WIDTH, height=DISPLAY_HEIGHT, resizable=False)
 
-# Load a big font for the gear number
-with dpg.font_registry():
-    big_font = dpg.add_font("C:/Windows/Fonts/arial.ttf", 200)  # Adjust path and size if needed
+class RaceDash(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(orientation="vertical", **kwargs)
+        self.padding = dp(10)
+        self.spacing = dp(20)
 
-# Create themes for normal & flashing backgrounds
-with dpg.theme() as normal_theme:
-    with dpg.theme_component(dpg.mvAll):
-        dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (20, 20, 20, 255))  # dark gray
+        # Background color control
+        self.bg_color = [0.1, 0.1, 0.1, 1]  # dark gray
+        Window.clearcolor = self.bg_color
 
-with dpg.theme() as warning_theme:
-    with dpg.theme_component(dpg.mvAll):
-        dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (255, 0, 0, 255))  # bright red
-# Function to update gear
-def set_gear(value):
-    dpg.set_value("Gear Position", value)
+        # RPM bar
+        self.rpm_bar = ProgressBar(max=MAX_RPM, value=0, size_hint=(1, None), height=80)
+        self.add_widget(self.rpm_bar)
 
-flash_state = False
-def update_rpm():
-    global flash_state
-    rpm_value = random.randint(0, MAX_RPM) / MAX_RPM
-    dpg.set_value("RPM GAUGE", rpm_value)
-    dpg.configure_item("RPM GAUGE", overlay=f"{int(rpm_value*MAX_RPM)} RPM")
+        # Spacer
+        self.add_widget(BoxLayout(size_hint_y=None, height=DISPLAY_HEIGHT//4))
 
-    if rpm_value >= 0.8:
-        # Toggle flashing effect every update
-        flash_state = not flash_state
-        if flash_state:
-            dpg.bind_item_theme("Main Display", warning_theme)
+        # Gear label (big font)
+        self.gear_label = Label(
+            text=gears[current_gear_index],
+            font_size=200,
+            size_hint=(1, None),
+            height=250
+        )
+        self.add_widget(self.gear_label)
+
+        # Buttons
+        button_layout = BoxLayout(size_hint=(1, None), height=80, spacing=20, padding=20)
+        self.up_button = Button(text="Upshift", on_press=self.upshift)
+        self.down_button = Button(text="Downshift", on_press=self.downshift)
+        button_layout.add_widget(self.up_button)
+        button_layout.add_widget(self.down_button)
+        self.add_widget(button_layout)
+
+        # Flash state
+        self.flash_state = False
+
+        # Start RPM update loop (30 times per second)
+        Clock.schedule_interval(self.update_rpm, 1/30)
+
+    def update_rpm(self, dt):
+        # Simulate RPM for now
+        rpm_value = random.randint(0, MAX_RPM)
+        self.rpm_bar.value = rpm_value
+        self.rpm_bar.value_normalized = rpm_value / MAX_RPM
+        self.rpm_bar.text = f"{rpm_value} RPM"
+
+        # Flashing effect if RPM >= 80%
+        if rpm_value >= 0.8 * MAX_RPM:
+            self.flash_state = not self.flash_state
+            Window.clearcolor = [1, 0, 0, 1] if self.flash_state else [0.1, 0.1, 0.1, 1]
         else:
-            dpg.bind_item_theme("Main Display", normal_theme)
-    else:
-        dpg.bind_item_theme("Main Display", normal_theme)
+            Window.clearcolor = [0.1, 0.1, 0.1, 1]
 
-# Main dash window
-with dpg.window(label="Main Display",
-                tag= "Main Display",
-                width=DISPLAY_WIDTH, height=DISPLAY_HEIGHT,
-                no_resize=True, no_move=True, no_title_bar=True):
+    def upshift(self, instance):
+        global current_gear_index
+        if current_gear_index < len(gears) - 1:
+            current_gear_index += 1
+        self.gear_label.text = gears[current_gear_index]
 
-    # RPM bar at the very top
-    dpg.add_progress_bar(tag="RPM GAUGE", default_value=0, width=DISPLAY_WIDTH-20, height=40, overlay="0 RPM")
+    def downshift(self, instance):
+        global current_gear_index
+        if current_gear_index > 0:
+            current_gear_index -= 1
+        self.gear_label.text = gears[current_gear_index]
 
-    # Spacer to push gear number down vertically
-    dpg.add_spacer(height=(DISPLAY_HEIGHT//2) - 150)
 
-    # Centered gear display
-    dpg.add_text(gear, tag="Gear Position", indent=(DISPLAY_WIDTH//2) - 60)
+class RaceDashApp(App):
+    def build(self):
+        return RaceDash()
 
-    # Buttons for testing
-    dpg.add_spacer(height=50)
-    dpg.add_button(label="Upshift", callback=lambda: set_gear("1"))
-    dpg.add_button(label="Downshift", callback=lambda: set_gear("N"))
 
-# Apply big font to gear number
-dpg.bind_item_font("Gear Position", big_font)
-
-# Simulate RPM updates every frame
-def rpm_loop(sender, app_data):
-    update_rpm()
-
-with dpg.handler_registry():
-    dpg.add_mouse_click_handler(callback=lambda: None)  # Just to create a registry
-
-dpg.setup_dearpygui()
-dpg.show_viewport()
-
-# Manual main loop so we can update RPM without freezing
-while dpg.is_dearpygui_running():
-    update_rpm()
-    dpg.render_dearpygui_frame()
-
-dpg.destroy_context()
+if __name__ == "__main__":
+    RaceDashApp().run()
