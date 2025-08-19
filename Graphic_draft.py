@@ -6,6 +6,7 @@ from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.metrics import dp
+from kivy.graphics import Color, Rectangle
 import random
 
 # Display resolution (set for Raspberry Pi 5" display)
@@ -31,7 +32,7 @@ class RaceDash(BoxLayout):
         Window.clearcolor = self.bg_color
 
         # RPM bar
-        self.rpm_bar = ProgressBar(max=MAX_RPM, value=0, size_hint=(1, None), height=80)
+        self.rpm_bar = ThickProgressBar(max=MAX_RPM, value=0, size_hint=(1, None), height=100)
         self.add_widget(self.rpm_bar)
 
         # Spacer
@@ -85,6 +86,25 @@ class RaceDash(BoxLayout):
         if current_gear_index > 0:
             current_gear_index -= 1
         self.gear_label.text = gears[current_gear_index]
+
+class ThickProgressBar(ProgressBar):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with self.canvas.before:
+            self.bg_color = Color(0.2, 0.2, 0.2, 1)  # dark gray background
+            self.bg_rect = Rectangle(pos=self.pos, size=self.size)
+        with self.canvas.after:
+            self.fg_color = Color(0, 1, 0, 1)  # green foreground bar
+            self.fg_rect = Rectangle(pos=self.pos, size=(0, self.height))
+
+        # Update rectangles when position, size, or value changes
+        self.bind(pos=self.update_rects, size=self.update_rects, value=self.update_rects)
+
+    def update_rects(self, *args):
+        self.bg_rect.pos = self.pos
+        self.bg_rect.size = self.size
+        self.fg_rect.pos = self.pos
+        self.fg_rect.size = (self.width * (self.value / self.max), self.height)
 
 
 class RaceDashApp(App):
