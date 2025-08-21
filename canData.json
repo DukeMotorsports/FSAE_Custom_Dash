@@ -1,0 +1,74 @@
+[
+    {
+        "name": "gear",
+        "id": "631",
+        "offset": 2,
+        "multiplier": 1.0,
+        "divisor": 1.0,
+        "adder": 0.0,
+        "resolution": 1.0
+    },
+    {
+        "name": "rpm",
+        "id": "640",
+        "offset": 0,
+        "multiplier": 1.0,
+        "divisor": 6.0,
+        "adder": 0.0,
+        "resolution": 0.1
+    },
+    {
+        "name": "oil pres",
+        "id": "644",
+        "offset": 6,
+        "multiplier": 1.0,
+        "divisor": 1.0,
+        "adder": 0.0,
+        "resolution": 0.1
+    },
+    {
+        "name": "coolant temp",
+        "id": "649",
+        "offset": 0,
+        "multiplier": 10.0,
+        "divisor": 1.0,
+        "adder": -400.0,
+        "resolution": 0.1
+    },
+    {
+        "name": "oil temp",
+        "id": "649",
+        "offset": 1,
+        "multiplier": 10.0,
+        "divisor": 1.0,
+        "adder": -400.0,
+        "resolution": 0.1
+    },
+    {
+        "name": "fuel temp",
+        "id": "649",
+        "offset": 2,
+        "multiplier": 10.0,
+        "divisor": 1.0,
+        "adder": -400.0,
+        "resolution": 0.1
+    },
+    {
+        "name": "drs mode",
+        "id": "7F6",
+        "offset": 0,
+        "multiplier": 1000.0,
+        "divisor": 1.0,
+        "adder": 0.0,
+        "resolution": 1.0
+    },
+    {
+        "name": "batt vol",
+        "id": "649",
+        "offset": 5,
+        "multiplier": 10.0,
+        "divisor": 1.0,
+        "adder": 0.0,
+        "resolution": 0.01
+    }
+]
