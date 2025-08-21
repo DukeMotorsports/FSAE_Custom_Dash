@@ -1,7 +1,7 @@
 [
     {
         "name": "gear",
-        "id": "631",
+        "id": "0x631",
         "offset": 2,
         "multiplier": 1.0,
         "divisor": 1.0,
@@ -10,7 +10,7 @@
     },
     {
         "name": "rpm",
-        "id": "640",
+        "id": "0x640",
         "offset": 0,
         "multiplier": 1.0,
         "divisor": 6.0,
@@ -19,7 +19,7 @@
     },
     {
         "name": "oil pres",
-        "id": "644",
+        "id": "0x644",
         "offset": 6,
         "multiplier": 1.0,
         "divisor": 1.0,
@@ -28,7 +28,7 @@
     },
     {
         "name": "coolant temp",
-        "id": "649",
+        "id": "0x649",
         "offset": 0,
         "multiplier": 10.0,
         "divisor": 1.0,
@@ -37,7 +37,7 @@
     },
     {
         "name": "oil temp",
-        "id": "649",
+        "id": "0x649",
         "offset": 1,
         "multiplier": 10.0,
         "divisor": 1.0,
@@ -46,7 +46,7 @@
     },
     {
         "name": "fuel temp",
-        "id": "649",
+        "id": "0x649",
         "offset": 2,
         "multiplier": 10.0,
         "divisor": 1.0,
@@ -64,7 +64,7 @@
     },
     {
         "name": "batt vol",
-        "id": "649",
+        "id": "0x649",
         "offset": 5,
         "multiplier": 10.0,
         "divisor": 1.0,
