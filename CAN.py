@@ -89,3 +89,5 @@ class CANDecoder:
         finally:
             self.bus.shutdown()
 
+# --- Global cache for latest values ---
+_latest_values = {}
