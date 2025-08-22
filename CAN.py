@@ -48,8 +48,9 @@ class CANDecoder:
         multiplier = sig.get("multiplier", 1)
         divisor = sig.get("divisor", 1)
         adder = sig.get("adder", 0)
+        baseResolution = sig.get("resolution", 1)
 
-        return ((raw_val * multiplier) / divisor) + adder
+        return ((raw_val * baseResolution * multiplier) / divisor) + adder
 
     def decode_message(self, msg):
         """Return dict of decoded signals for this CAN msg."""
