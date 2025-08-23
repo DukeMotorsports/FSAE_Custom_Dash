@@ -8,7 +8,8 @@ from kivy.core.window import Window
 from kivy.metrics import dp
 from kivy.graphics import Color, Rectangle
 import random
-
+import CAN as CAN
+import threading
 # Display resolution (set for Raspberry Pi 5" display)
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 480
@@ -63,7 +64,7 @@ class RaceDash(BoxLayout):
 
     def update_rpm(self, dt):
         # Simulate RPM for now
-        rpm_value = random.randint(0, MAX_RPM)
+        rpm_value = CAN.get_rpm()
         self.rpm_bar.value = rpm_value
         self.rpm_bar.value_normalized = rpm_value / MAX_RPM
         self.rpm_bar.text = f"{rpm_value} RPM"
@@ -109,6 +110,7 @@ class ThickProgressBar(ProgressBar):
 
 class RaceDashApp(App):
     def build(self):
+        threading.Thread(target=CAN.CANDecoder("can_signals.json").listen, deamon=True).start
         return RaceDash()
 
 

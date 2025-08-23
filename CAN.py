@@ -48,8 +48,9 @@ class CANDecoder:
         multiplier = sig.get("multiplier", 1)
         divisor = sig.get("divisor", 1)
         adder = sig.get("adder", 0)
+        baseResolution = sig.get("resolution", 1)
 
-        return ((raw_val * multiplier) / divisor) + adder
+        return ((raw_val * baseResolution * multiplier) / divisor) + adder
 
     def decode_message(self, msg):
         """Return dict of decoded signals for this CAN msg."""
@@ -80,6 +81,8 @@ class CANDecoder:
                 # Decode if JSON has a match
                 decoded = self.decode_message(msg)
                 if decoded:
+                    _latest_values.update(decoded)
+                    
                     print("  Decoded:", decoded)
                     if callback:
                         callback(decoded)
@@ -88,3 +91,9 @@ class CANDecoder:
         finally:
             self.bus.shutdown()
 
+# --- Global cache for latest values ---
+_latest_values = {}
+
+def get_rpm(default=0):
+    """Getter for latest RPM value (returns default if not yet seen)."""
+    return _latest_values.get("RPM", default)
