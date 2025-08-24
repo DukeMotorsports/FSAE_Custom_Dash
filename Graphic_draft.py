@@ -8,6 +8,7 @@ from kivy.core.window import Window
 from kivy.metrics import dp
 from kivy.graphics import Color, Rectangle
 import random
+import CAN as CAN
 
 # Display resolution (set for Raspberry Pi 5" display)
 DISPLAY_WIDTH = 800
