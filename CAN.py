@@ -37,18 +37,19 @@ class CANDecoder:
 
     def decode_signal(self, sig, data):
         offset = sig["offset"]
-        length = sig.get("base_resolution", 1)
+        length = sig.get("length", 1)
         if offset + length > len(data):
             return None
 
         raw_bytes = data[offset:offset+length]
-        raw_val = int.from_bytes(raw_bytes, byteorder="little", signed=False)
+        raw_val = int.from_bytes(raw_bytes, byteorder="big", signed=False)
 
         # Apply scaling
         multiplier = sig.get("multiplier", 1)
         divisor = sig.get("divisor", 1)
         adder = sig.get("adder", 0)
         baseResolution = sig.get("resolution", 1)
+
 
         return (((raw_val * multiplier) / divisor) + adder) * baseResolution
 
