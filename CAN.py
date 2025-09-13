@@ -83,6 +83,8 @@ class CANDecoder:
                 # Decode if JSON has a match
                 decoded = self.decode_message(msg)
                 if decoded:
+                    _latest_values.update(decoded)
+                    
                     print("  Decoded:", decoded)
                     if callback:
                         callback(decoded)
@@ -91,3 +93,9 @@ class CANDecoder:
         finally:
             self.bus.shutdown()
 
+# --- Global cache for latest values ---
+_latest_values = {}
+
+def get_rpm(default=0):
+    """Getter for latest RPM value (returns default if not yet seen)."""
+    return _latest_values.get("RPM", default)
